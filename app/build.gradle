@@ -4,6 +4,8 @@ plugins {
 }
 
 android {
+
+    namespace 'com.google.ar.core.examples.java.ml'
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
