@@ -11,14 +11,66 @@ android {
         applicationId "com.google.ar.core.examples.java.ml"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode getGitCommitCount()
+        versionName getTag()
     }
 
+    signingConfigs {
+        release {
+            storeFile file('../signing/release.keystore')
+            storePassword System.getenv("KEYSTORE_PASS")
+            keyAlias System.getenv("ALIAS_NAME")
+            keyPassword System.getenv("ALIAS_PASS")
+        }
+        debug {
+            storePassword "android"
+            keyPassword "android"
+            keyAlias "androiddebugkey"
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (System.getenv("CI_SERVER")) { // gitlab
+                println "I run on Gitlab and use RELEASE signing"
+                signingConfig signingConfigs.release
+            } else if (file('../signing/release.keystore').exists()) {
+                if (System.getenv("KEYSTORE_PASS") == null || System.getenv("ALIAS_NAME") == null || System.getenv("ALIAS_PASS") == null) {
+                    println "I run somewhere else and I use DEBUG signing because variables are not set !"
+                    signingConfig signingConfigs.debug
+                } else {
+                    println "I run somewhere else and I use RELEASE signing"
+                    signingConfig signingConfigs.release
+                }
+            } else {
+                println "I run somewhere else and I use debug signing"
+                signingConfig signingConfigs.debug
+            }
+        }
+        debug {
+            if (System.getenv("CI") == "true") { // Github action
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
+            }
+            applicationIdSuffix ".debug"
+            versionNameSuffix ".debug"
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (variant.name == "release") {
+                def builtType = variant.buildType.name
+                def vName = variant.versionName
+                def vCode = variant.versionCode
+                // def flavor = variant.flavorName
+                def newName = "ARCoreML"
+                newName += "-${vName}-${vCode}-${builtType}.apk"
+                outputFileName = newName
+            }
+            println "$variant.name: name is $outputFileName"
         }
     }
     compileOptions {
@@ -63,4 +115,14 @@ dependencies {
     // Obj - a simple Wavefront OBJ file loader
     // https://github.com/javagl/Obj
     implementation 'de.javagl:obj:0.2.1'
+}
+
+static def getGitCommitCount() {
+    def process = "git rev-list HEAD --count".execute()
+    return process.text.toInteger()
+}
+
+static def getTag() {
+    def process = "git describe --tags".execute()
+    return process.text.toString().trim()
 }
