@@ -6,13 +6,12 @@ plugins {
 android {
 
     namespace 'com.google.ar.core.examples.java.ml'
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.google.ar.core.examples.java.ml"
         minSdkVersion 24
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode getGitCommitCount()
         versionName getTag()
     }
