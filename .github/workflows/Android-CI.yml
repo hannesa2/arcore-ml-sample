@@ -21,18 +21,12 @@ jobs:
           java-version: ${{ matrix.java_version }}
       - name: Install Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.1.4
-      - name: Decrypt keystore
-        run: ./signing/decrypt.sh
-        env:
-          CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
+      - name: Prepare debug keystore
+        run: mkdir -p /Users/runner/android-sdk/sdk_home/.android
+      - name: Debug keystore
+        run: keytool -genkey -v -keystore /Users/runner/android-sdk/sdk_home/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug"
       - name: Build project
         run: ./gradlew assembleRelease
-        env:
-          KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
-          ALIAS_NAME: ${{ secrets.ALIAS_NAME }}
-          ALIAS_PASS: ${{ secrets.ALIAS_PASS }}
-      - name: cleanup keystore
-        run: ./signing/cleanup.sh
   buildTest:
     name: Build & Test JDK ${{ matrix.java_version }}
     runs-on: macOS-latest
@@ -51,18 +45,12 @@ jobs:
           java-version: ${{ matrix.java_version }}
       - name: Install Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.1.4
-      - name: Decrypt keystore
-        run: ./signing/decrypt.sh
-        env:
-          CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
+      - name: Prepare debug keystore
+        run: mkdir -p /Users/runner/android-sdk/sdk_home/.android
+      - name: Debug keystore
+        run: keytool -genkey -v -keystore /Users/runner/android-sdk/sdk_home/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug"
       - name: Build project
         run: ./gradlew assembleDebug
-        env:
-          KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
-          ALIAS_NAME: ${{ secrets.ALIAS_NAME }}
-          ALIAS_PASS: ${{ secrets.ALIAS_PASS }}
-      - name: cleanup keystore
-        run: ./signing/cleanup.sh
       - name: Run tests
         run: ./gradlew test
   #      - name: Run instrumentation tests

@@ -50,7 +50,7 @@ android {
             }
         }
         debug {
-            if (System.getenv("CI") == "true") { // Github action
+            if (System.getenv("CI") == "true" && file('../signing/release.keystore').exists()) { // Github action
                 signingConfig signingConfigs.release
             } else {
                 signingConfig signingConfigs.debug
