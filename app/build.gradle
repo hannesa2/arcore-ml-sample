@@ -104,7 +104,7 @@ dependencies {
 
     // Google Cloud Vision APIs
     implementation platform('com.google.cloud:libraries-bom:19.2.1')
-    implementation 'com.google.cloud:google-cloud-vision:1.102.0'
+    implementation 'com.google.cloud:google-cloud-vision:3.5.0'
     implementation 'io.grpc:grpc-okhttp:1.51.0'
 
     // MLKit
