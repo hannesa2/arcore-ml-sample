@@ -103,7 +103,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.7.0'
 
     // Google Cloud Vision APIs
-    implementation platform('com.google.cloud:libraries-bom:26.1.5')
+    implementation platform('com.google.cloud:libraries-bom:26.8.0')
     implementation 'com.google.cloud:google-cloud-vision:3.5.0'
     implementation 'io.grpc:grpc-okhttp:1.51.0'
 
