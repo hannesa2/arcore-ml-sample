@@ -116,7 +116,7 @@ dependencies {
 
     // Obj - a simple Wavefront OBJ file loader
     // https://github.com/javagl/Obj
-    implementation 'de.javagl:obj:0.3.0'
+    implementation 'de.javagl:obj:0.4.0'
 }
 
 static def getGitCommitCount() {
